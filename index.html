@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1630">
+<title>Hundi Crypto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a phone app. On wide screens it sits in an iPhone frame; on a phone it fills the screen. Brand header (midnight + coin gold) on Home, iOS grouped lists elsewhere, tab bar at the bottom. */
+:root{
+  --bg:#F2F3F7; --card:#FFFFFF; --ink:#11161F; --ink-2:#6B7280; --line:#E6E8EE; --fill:#ECEEF3;
+  --brand:#0B1630; --brand-2:#1B2C5A; --gold:#F4B740; --gold-ink:#2A1C00;
+  --up:#16A34A; --down:#DC2626; --wa:#25D366; --tabbar:rgba(255,255,255,.9); --desk:#E3E6EE;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#05080F; --card:#121826; --ink:#F1F3F8; --ink-2:#9AA3B5; --line:#232B3B; --fill:#1B2232;
+  --brand:#070E20; --brand-2:#15244A; --up:#34D399; --down:#F87171; --tabbar:rgba(14,19,30,.9); --desk:#0A0D14; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#05080F; --card:#121826; --ink:#F1F3F8; --ink-2:#9AA3B5; --line:#232B3B; --fill:#1B2232;
+  --brand:#070E20; --brand-2:#15244A; --up:#34D399; --down:#F87171; --tabbar:rgba(14,19,30,.9); --desk:#0A0D14; color-scheme:dark }
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--desk);color:var(--ink);font:400 16px/1.4 var(--font);letter-spacing:-.01em;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding-inline:16px}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:8px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- phone shell ---------- */
+.phone{position:relative;width:390px;max-width:100%;height:min(844px,calc(100% - 32px));background:var(--bg);border-radius:54px;border:11px solid #0E0F12;box-shadow:0 40px 80px -30px rgba(10,20,40,.45),0 0 0 2px #2A2D33;overflow:hidden;display:flex;flex-direction:column}
+.island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:118px;height:32px;background:#000;border-radius:20px;z-index:40}
+.statusbar{position:absolute;top:0;left:0;right:0;height:50px;z-index:35;display:flex;justify-content:space-between;align-items:center;padding:6px 30px 0;font-size:15px;font-weight:600;color:#fff;pointer-events:none}
+.statusbar .icons{display:flex;gap:6px;align-items:center}
+.phone.light-top .statusbar{color:var(--ink)}
+.scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+@media (max-width:600px){
+  body{padding-inline:0;display:block}
+  .phone{width:100%;height:100%;border:0;border-radius:0;box-shadow:none}
+  .island,.statusbar{display:none}
+}
+
+/* ---------- home header ---------- */
+.hero{background:radial-gradient(120% 90% at 100% 0%,#2B3F7A 0%,transparent 55%),linear-gradient(180deg,var(--brand-2),var(--brand));color:#fff;padding:58px 20px 70px}
+@media (max-width:600px){.hero{padding-top:calc(16px + env(safe-area-inset-top,0px))}}
+.bar{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.coin{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 210deg,#FFD978,#F4B740,#C98A12,#F4B740,#FFD978);display:grid;place-items:center;color:var(--gold-ink);font-weight:800;font-size:16px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.logo span b{color:var(--gold)}
+.lang{display:inline-flex;background:rgba(255,255,255,.12);border-radius:10px;padding:2px}
+.lang button{border:0;background:none;padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer}
+.lang button[aria-pressed="true"]{background:#fff;color:var(--brand)}
+.hello{margin-top:22px;font-size:15px;color:rgba(255,255,255,.7)}
+.price-label{margin-top:4px;font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px}
+.big{font-size:42px;font-weight:800;letter-spacing:-.03em;margin-top:2px;line-height:1.05}
+.big small{font-size:20px;font-weight:600;color:rgba(255,255,255,.65)}
+.chg{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700;padding:3px 8px;border-radius:999px;margin-top:8px}
+.chg.up{background:rgba(52,211,153,.18);color:#6EE7B7}.chg.down{background:rgba(248,113,113,.18);color:#FCA5A5}
+.chart{display:block;width:100%;height:60px;margin-top:12px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.7)}
+.dot{width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* quick actions */
+.actions{margin:-46px 16px 0;background:var(--card);border-radius:22px;padding:16px 8px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 12px 30px -16px rgba(11,22,48,.35);position:relative}
+.act{border:0;background:none;display:grid;justify-items:center;gap:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--ink)}
+.act i{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--fill);color:var(--brand-2)}
+:root[data-theme="dark"] .act i{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .act i{color:var(--gold)}}
+.act:first-child i{background:var(--gold);color:var(--gold-ink)}
+
+/* sections */
+.pad{padding:0 16px 24px}
+.label{display:flex;justify-content:space-between;align-items:baseline;font-size:20px;font-weight:700;letter-spacing:-.02em;padding:24px 4px 10px}
+.label small{font-size:13px;font-weight:500;color:var(--ink-2)}
+.page-title{font-size:32px;font-weight:800;letter-spacing:-.03em;padding:58px 20px 0}
+@media (max-width:600px){.page-title{padding-top:calc(20px + env(safe-area-inset-top,0px))}}
+.group{background:var(--card);border-radius:16px;overflow:hidden}
+.foot{font-size:13px;color:var(--ink-2);padding:8px 4px 0}
+
+/* rate rows */
+.rate,.rhead{display:grid;grid-template-columns:minmax(0,1fr) 82px 82px;align-items:center;gap:6px;padding:12px 12px 12px 16px;min-height:64px}
+.rhead{min-height:0;padding-top:10px;padding-bottom:4px;font-size:12px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em}
+.rhead span{text-align:right;padding-right:6px}
+.rate{border-top:.5px solid var(--line)}
+.rate .v{text-align:right;font-size:16px;font-weight:700;padding:3px 6px;border-radius:6px;transition:background .6s}
+.rate .v.up{background:color-mix(in srgb,var(--up) 18%,transparent)}.rate .v.down{background:color-mix(in srgb,var(--down) 16%,transparent)}
+.who{display:flex;align-items:center;gap:12px;min-width:0}
+.badge{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:800;color:#fff}
+.who b{display:block;font-weight:600;font-size:16px}
+.who small{display:block;font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* segmented + calculator */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--fill);border-radius:11px;padding:3px;margin:16px 0 0}
+.seg button{border:0;background:none;padding:8px 0;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.box{background:var(--card);border-radius:18px;padding:14px 16px}
+.box .k{font-size:13px;color:var(--ink-2);font-weight:500}
+.inrow{display:flex;align-items:center;gap:10px;margin-top:6px}
+.inrow input{flex:1;min-width:0;border:0;background:none;font-size:30px;font-weight:700;outline:none;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.inrow .out{flex:1;min-width:0;font-size:30px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.02em;overflow-wrap:anywhere}
+.cur{appearance:none;border:0;background:var(--fill);border-radius:999px;padding:8px 14px;font-size:15px;font-weight:700;cursor:pointer}
+.swap{display:flex;justify-content:center;margin:-12px 0;position:relative;z-index:1}
+.swap button{width:40px;height:40px;border-radius:14px;border:3px solid var(--bg);background:var(--gold);color:var(--gold-ink);display:grid;place-items:center;cursor:pointer}
+.details{margin-top:12px}
+.info{display:flex;justify-content:space-between;gap:10px;padding:12px 16px;font-size:15px}
+.info + .info{border-top:.5px solid var(--line)}
+.info span:first-child{color:var(--ink-2)}
+.info span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;border:0;border-radius:16px;padding:16px;font-size:17px;font-weight:700;text-decoration:none;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--gold-ink)}
+.btn.wa{background:var(--wa);color:#05310F}
+
+/* branches + contact */
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px}
+.row + .row{border-top:.5px solid var(--line)}
+.row b{font-size:16px;font-weight:600}
+.row p{margin:2px 0 0;font-size:13px;color:var(--ink-2)}
+.pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.pill.open{color:var(--up);background:color-mix(in srgb,var(--up) 15%,transparent)}
+.pill.closed{color:var(--down);background:color-mix(in srgb,var(--down) 13%,transparent)}
+.row .t{color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:15px}
+.copy{border:0;background:var(--fill);border-radius:999px;color:var(--ink);font-size:13px;font-weight:700;cursor:pointer;padding:7px 12px}
+.card-brand{background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff;border-radius:20px;padding:20px;display:grid;gap:8px;margin-top:16px}
+.card-brand p{margin:0;color:rgba(255,255,255,.75);font-size:14px}
+
+/* tab bar */
+.tabbar{background:var(--tabbar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 0 22px}
+@media (max-width:600px){.tabbar{padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}}
+.tabbar button{border:0;background:none;display:grid;justify-items:center;gap:3px;padding:4px 0;font-size:10px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.tabbar button[aria-current="page"]{color:var(--ink)}
+.tabbar button[aria-current="page"] svg{color:var(--gold)}
+.tabbar svg{width:25px;height:25px}
+
+.demo-tag{position:absolute;top:58px;right:16px;z-index:5;font-size:10px;font-weight:700;letter-spacing:.04em;padding:3px 7px;border-radius:6px;background:rgba(244,183,64,.2);color:var(--gold)}
+@media (max-width:600px){.demo-tag{top:calc(56px + env(safe-area-inset-top,0px))}}
+.toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:50;white-space:nowrap}
+.screen[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+  <div class="island" aria-hidden="true"></div>
+  <div class="statusbar" aria-hidden="true"><span id="sb-time">9:41</span><span class="icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="26" height="12" viewBox="0 0 26 12" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="22" height="11" rx="3.5" opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="2" fill="currentColor" stroke="none"/><rect x="24" y="4" width="1.5" height="4" rx=".7" fill="currentColor" stroke="none" opacity=".5"/></svg>
+  </span></div>
+
+  <div class="scroll" id="scroll">
+
+    <!-- HOME -->
+    <section class="screen" id="s-home">
+      <div class="hero">
+        <div class="bar">
+          <div class="logo"><span class="coin">H</span><span>Hundi <b>Crypto</b></span></div>
+          <div class="lang" role="group" aria-label="Language">
+            <button type="button" id="l-en" aria-pressed="true">EN</button>
+            <button type="button" id="l-tr" aria-pressed="false">TR</button>
+          </div>
+        </div>
+        <p class="hello" id="hello">Good morning</p>
+        <p class="price-label"><span>USDT / TRY</span><span class="live"><span class="dot" aria-hidden="true"></span><span data-i18n="live">Live</span></span></p>
+        <div class="big num" id="hero-price">43.32 <small>₺</small></div>
+        <span class="chg up num" id="hero-chg">▲ 0.12%</span>
+        <svg class="chart" id="hero-chart" viewBox="0 0 320 60" preserveAspectRatio="none" aria-hidden="true"></svg>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="act" data-go="calc" data-mode="cash"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3"/></svg></i><span data-i18n="a_ex">Exchange</span></button>
+        <button type="button" class="act" data-go="calc" data-mode="xfer"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg></i><span data-i18n="a_send">Send</span></button>
+        <button type="button" class="act" data-go="calc" data-mode="usdt"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 8h8M12 8v9M8.5 11.5c1 .6 2.2.9 3.5.9s2.5-.3 3.5-.9"/></svg></i><span data-i18n="a_usdt">USDT</span></button>
+        <button type="button" class="act" data-go="branch"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></i><span data-i18n="a_br">Branches</span></button>
+      </div>
+
+      <div class="pad">
+        <div class="label"><span data-i18n="l_rates">Live rates</span><small>TRY</small></div>
+        <div class="group"><div class="rhead"><span style="text-align:left" data-i18n="h_cur">Currency</span><span data-i18n="h_buy">Buy</span><span data-i18n="h_sell">Sell</span></div><div id="rates"></div></div>
+        <p class="foot"><span data-i18n="f_rates">Cash counter rates in Turkish Lira.</span> <span id="upd"></span></p>
+      </div>
+    </section>
+
+    <!-- CALCULATE -->
+    <section class="screen" id="s-calc" hidden>
+      <h1 class="page-title" data-i18n="t_calc">Exchange</h1>
+      <div class="pad">
+        <div class="seg" role="group" aria-label="Type">
+          <button type="button" id="m-cash" aria-pressed="true" data-i18n="m_cash">Cash</button>
+          <button type="button" id="m-xfer" aria-pressed="false" data-i18n="m_xfer">Transfer</button>
+          <button type="button" id="m-usdt" aria-pressed="false">USDT</button>
+        </div>
+
+        <div style="margin-top:16px">
+          <div class="box">
+            <div class="k" id="k-give">You give</div>
+            <div class="inrow"><input id="amt" type="number" inputmode="decimal" min="0" step="any" value="1000" aria-label="Amount"><select class="cur" id="from" aria-label="From currency"></select></div>
+          </div>
+          <div class="swap"><button type="button" id="swap" aria-label="Swap currencies"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3"/></svg></button></div>
+          <div class="box">
+            <div class="k" id="k-get">You get</div>
+            <div class="inrow"><span class="out" id="out">—</span><select class="cur" id="to" aria-label="To currency"></select></div>
+          </div>
+        </div>
+
+        <div class="group details">
+          <div class="info"><span data-i18n="rate">Rate</span><span id="i-rate">—</span></div>
+          <div class="info"><span data-i18n="fee">Commission</span><span id="i-fee">—</span></div>
+          <div class="info"><span id="i-k3">Time</span><span id="i-time">—</span></div>
+        </div>
+
+        <a class="btn gold" id="wa-lock" href="https://wa.me/905330000000" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+          <span data-i18n="lock">Lock this rate on WhatsApp</span>
+        </a>
+        <p class="foot" data-i18n="f_lock">We hold your rate for 30 minutes.</p>
+      </div>
+    </section>
+
+    <!-- BRANCHES -->
+    <section class="screen" id="s-branch" hidden>
+      <h1 class="page-title" data-i18n="t_br">Branches</h1>
+      <div class="pad">
+        <div class="label"><span data-i18n="l_near">Visit us</span></div>
+        <div class="group" id="branches"></div>
+        <div class="label"><span data-i18n="l_hours">Working hours</span></div>
+        <div class="group">
+          <div class="row"><span data-i18n="h1">Cash · Mon–Fri</span><span class="t">08:00–17:00</span></div>
+          <div class="row"><span data-i18n="h2">Cash · Saturday</span><span class="t">08:00–13:00</span></div>
+          <div class="row"><span data-i18n="h3">EFT / Havale · Mon–Fri</span><span class="t">08:00–16:00</span></div>
+          <div class="row"><span data-i18n="h4">EFT / Havale · Saturday</span><span class="t">08:00–12:00</span></div>
+          <div class="row"><span data-i18n="h5">Sunday</span><span class="t" data-i18n="closed">Closed</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="screen" id="s-contact" hidden>
+      <h1 class="page-title" data-i18n="t_ct">Contact</h1>
+      <div class="pad">
+        <div class="card-brand">
+          <div class="logo"><span class="coin">H</span><span>Hundi <b style="color:var(--gold)">Crypto</b></span></div>
+          <p data-i18n="about">Licensed currency exchange in North Cyprus. Cash, EFT / Havale and USDT, with no commission at the counter.</p>
+        </div>
+        <div class="label"><span data-i18n="l_reach">Reach us</span></div>
+        <div class="group">
+          <div class="row"><div><p style="margin:0">WhatsApp</p><b id="num" style="user-select:all">+90 533 000 00 00</b></div><button type="button" class="copy" id="copy" data-i18n="copy">Copy</button></div>
+          <div class="row"><div><p style="margin:0" data-i18n="email">Email</p><b style="user-select:all">info@hundicrypto.com</b></div></div>
+        </div>
+        <a class="btn wa" href="https://wa.me/905330000000" target="_blank" rel="noopener" data-i18n="chat">Chat on WhatsApp</a>
+        <p class="foot" data-i18n="f_demo">Demo app. Rates and contact details are examples.</p>
+      </div>
+    </section>
+  </div>
+
+  <span class="demo-tag" id="demo-tag">DEMO</span>
+
+  <nav class="tabbar" aria-label="Tabs">
+    <button type="button" data-tab="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg><span data-i18n="tab_home">Home</span></button>
+    <button type="button" data-tab="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M7 4v16m0 0-3-3m3 3 3-3M17 20V4m0 0-3 3m3-3 3 3"/></svg><span data-i18n="tab_calc">Exchange</span></button>
+    <button type="button" data-tab="branch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg><span data-i18n="tab_br">Branches</span></button>
+    <button type="button" data-tab="contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></svg><span data-i18n="tab_ct">Contact</span></button>
+  </nav>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var R={
+    USDT:{n:["Tether","Tether"],c:"#26A17B",s:"₮",buy:43.05,sell:43.60},
+    USD:{n:["US Dollar","Amerikan Doları"],c:"#2F6FDE",s:"$",buy:43.18,sell:43.42},
+    EUR:{n:["Euro","Euro"],c:"#5B4FD6",s:"€",buy:50.06,sell:50.38},
+    GBP:{n:["British Pound","İngiliz Sterlini"],c:"#C2410C",s:"£",buy:57.74,sell:58.16}
+  };
+  Object.keys(R).forEach(function(k){var r=R[k];r.open=(r.buy+r.sell)/2;r.hist=[];for(var i=0;i<40;i++){r.hist.push(r.open*(1+Math.sin(i/5+k.length)*.0012+(Math.random()-.5)*.0012));}});
+  var lang="en",tab="home",mode="cash",last=Date.now();
+  try{if(localStorage.getItem("hc-lang")==="tr")lang="tr";}catch(e){}
+
+  var TR={live:"Canlı",a_ex:"Döviz",a_send:"Gönder",a_usdt:"USDT",a_br:"Şubeler",l_rates:"Canlı kurlar",h_cur:"Döviz",h_buy:"Alış",h_sell:"Satış",f_rates:"Türk Lirası gişe kurları.",
+    t_calc:"Döviz",m_cash:"Nakit",m_xfer:"Transfer",rate:"Kur",fee:"Komisyon",lock:"Bu kuru WhatsApp'tan sabitle",f_lock:"Kurunuzu 30 dakika tutarız.",
+    t_br:"Şubeler",l_near:"Bizi ziyaret edin",l_hours:"Çalışma saatleri",h1:"Gişe · Pzt–Cum",h2:"Gişe · Cumartesi",h3:"EFT / Havale · Pzt–Cum",h4:"EFT / Havale · Cumartesi",h5:"Pazar",closed:"Kapalı",
+    t_ct:"İletişim",about:"Kuzey Kıbrıs'ta lisanslı döviz bürosu. Nakit, EFT / Havale ve USDT; gişede komisyon yok.",l_reach:"Bize ulaşın",copy:"Kopyala",email:"E-posta",chat:"WhatsApp'tan yazın",f_demo:"Demo uygulama. Kurlar ve iletişim bilgileri örnektir.",
+    tab_home:"Ana sayfa",tab_calc:"Döviz",tab_br:"Şubeler",tab_ct:"İletişim"};
+  var EN={};document.querySelectorAll("[data-i18n]").forEach(function(el){EN[el.dataset.i18n]=el.textContent;});
+  var W={
+    en:{hi:["Good morning","Good afternoon","Good evening"],upd:"Updated",now:"just now",ago:"s ago",open:"Open now",closed:"Closed",copied:"Copied",copyfail:"Select the number to copy",
+        give:"You give",get:"You get",send:"You send",pay:"You pay",buyU:"You pay",getU:"You receive",none:"None",time:"Time",ready:"Ready now",same:"Same day before 16:00",net:"Network",trc:"TRC-20 · fee 1 USDT",try_:"Turkish Lira",msg:"Hi! I want to lock this rate: "},
+    tr:{hi:["Günaydın","İyi günler","İyi akşamlar"],upd:"Güncellendi",now:"şimdi",ago:" sn önce",open:"Şu an açık",closed:"Kapalı",copied:"Kopyalandı",copyfail:"Kopyalamak için numarayı seçin",
+        give:"Verdiğiniz",get:"Aldığınız",send:"Gönderdiğiniz",pay:"Ödeyeceğiniz",buyU:"Ödeyeceğiniz",getU:"Alacağınız",none:"Yok",time:"Süre",ready:"Hemen hazır",same:"16:00'dan önce aynı gün",net:"Ağ",trc:"TRC-20 · ücret 1 USDT",try_:"Türk Lirası",msg:"Merhaba! Bu kuru sabitlemek istiyorum: "}
+  };
+  function fmt(n,d){return n.toLocaleString(lang==="tr"?"tr-TR":"en-GB",{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function name(k){return k==="TRY"?W[lang].try_:R[k].n[lang==="tr"?1:0];}
+  function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true;},1800);}
+  function kktcHour(){return parseInt(new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Famagusta",hour:"2-digit",hour12:false}).format(new Date()),10);}
+
+  /* hero */
+  function drawHero(){
+    var r=R.USDT,mid=(r.buy+r.sell)/2,ch=(mid-r.open)/r.open*100,up=ch>=0;
+    $("hero-price").innerHTML=fmt(mid,2)+' <small>₺</small>';
+    var c=$("hero-chg");c.className="chg num "+(up?"up":"down");c.textContent=(up?"▲ ":"▼ ")+fmt(Math.abs(ch),2)+"%";
+    var h=r.hist,min=Math.min.apply(null,h),max=Math.max.apply(null,h),rg=(max-min)||1;
+    var pts=h.map(function(v,i){return [(i/(h.length-1)*320).toFixed(1),(54-(v-min)/rg*48).toFixed(1)];});
+    var line=pts.map(function(p){return p.join(",");}).join(" ");
+    $("hero-chart").innerHTML='<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4B740" stop-opacity=".35"/><stop offset="1" stop-color="#F4B740" stop-opacity="0"/></linearGradient></defs>'+
+      '<polygon fill="url(#g)" points="0,60 '+line+' 320,60"/><polyline fill="none" stroke="#F4B740" stroke-width="2" stroke-linejoin="round" points="'+line+'"/>'+
+      '<circle cx="'+pts[pts.length-1][0]+'" cy="'+pts[pts.length-1][1]+'" r="3.5" fill="#F4B740"/>';
+  }
+  /* rates */
+  function renderRates(){
+    $("rates").innerHTML=Object.keys(R).map(function(k){var r=R[k];
+      return '<div class="rate"><div class="who"><span class="badge" style="background:'+r.c+'">'+r.s+'</span><div style="min-width:0"><b>'+k+'</b><small>'+name(k)+'</small></div></div>'+
+      '<span class="v num" data-kb="'+k+'">'+fmt(r.buy,4)+'</span><span class="v num" data-k="'+k+'">'+fmt(r.sell,4)+'</span></div>';}).join("");
+  }
+  function flash(el,nv,ov){if(!el)return;el.textContent=fmt(nv,4);el.classList.remove("up","down");if(nv!==ov){el.classList.add(nv>ov?"up":"down");setTimeout(function(){el.classList.remove("up","down");},700);}}
+  function tick(){
+    Object.keys(R).forEach(function(k){var r=R[k],s=r.sell-r.buy,m=(r.buy+r.sell)/2,ob=r.buy,os=r.sell;
+      m+=(Math.random()-.5)*m*.0008+(r.open-m)*.04;r.buy=+(m-s/2).toFixed(4);r.sell=+(m+s/2).toFixed(4);r.hist.push(m);if(r.hist.length>40)r.hist.shift();
+      flash(document.querySelector('[data-kb="'+k+'"]'),r.buy,ob);flash(document.querySelector('[data-k="'+k+'"]'),r.sell,os);});
+    last=Date.now();drawHero();calc();
+  }
+  function clock(){
+    var s=Math.round((Date.now()-last)/1000);$("upd").textContent=W[lang].upd+" "+(s<2?W[lang].now:s+W[lang].ago)+".";
+    $("sb-time").textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Famagusta",hour:"numeric",minute:"2-digit",hour12:false}).format(new Date());
+  }
+
+  /* calculator */
+  var LISTS={cash:["USD","EUR","GBP","TRY"],xfer:["USD","EUR","GBP"],usdt:["TRY","USDT"]};
+  function fill(){
+    var from=$("from"),to=$("to");
+    if(mode==="cash"){from.innerHTML=LISTS.cash.map(o).join("");to.innerHTML=LISTS.cash.map(o).join("");from.value="USD";to.value="TRY";}
+    if(mode==="xfer"){from.innerHTML=LISTS.xfer.map(o).join("");to.innerHTML=o("TRY");from.value="USD";to.value="TRY";$("amt").value=500;}
+    if(mode==="usdt"){from.innerHTML=LISTS.usdt.map(o).join("");to.innerHTML=LISTS.usdt.map(o).join("");from.value="TRY";to.value="USDT";$("amt").value=10000;}
+    if(mode==="cash")$("amt").value=1000;
+    function o(c){return '<option value="'+c+'">'+c+'</option>';}
+  }
+  function calc(){
+    var w=W[lang],a=$("from").value,b=$("to").value,amt=parseFloat($("amt").value)||0,out=0,fee=w.none,t=w.ready;
+    if(mode==="xfer"){out=amt*R[a].sell;$("k-give").textContent=w.send;$("k-get").textContent=w.pay;t=w.same;}
+    else if(mode==="usdt"){
+      $("k-give").textContent=a==="TRY"?w.buyU:w.give;$("k-get").textContent=w.getU;
+      if(a===b)out=amt;else if(a==="TRY"){out=Math.max(amt/R.USDT.sell-1,0);fee=w.trc;}else{out=amt*R.USDT.buy;}
+    } else {
+      $("k-give").textContent=w.give;$("k-get").textContent=w.get;
+      if(a===b)out=amt;else{var x=a==="TRY"?amt:amt*R[a].buy;out=b==="TRY"?x:x/R[b].sell;}
+    }
+    $("out").textContent=fmt(out,2);
+    var rate=amt?out/amt:0;
+    $("i-rate").textContent=a===b?"—":(rate>=0.01?"1 "+a+" = "+fmt(rate,4)+" "+b:"1 "+b+" = "+fmt(1/rate,4)+" "+a);
+    $("i-fee").textContent=fee;$("i-k3").textContent=w.time;$("i-time").textContent=t;
+    var msg=w.msg+fmt(amt,2)+" "+a+" → "+fmt(out,2)+" "+b+(mode==="xfer"?" (EFT)":"");
+    $("wa-lock").href="https://wa.me/905330000000?text="+encodeURIComponent(msg);
+  }
+  function setMode(m){mode=m;["cash","xfer","usdt"].forEach(function(x){$("m-"+x).setAttribute("aria-pressed",x===m);});fill();calc();}
+
+  /* branches */
+  var B=[{c:"Lefkoşa",a:"Mehmet Akif Cd. No 12, Dereboyu"},{c:"Girne",a:"Ziya Rızkı Cd. No 45, Merkez"},{c:"Gazimağusa",a:"İsmet İnönü Blv. No 7"}];
+  function renderBranches(){
+    var d=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Famagusta",weekday:"short"}).format(new Date()),p=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Famagusta",hour:"2-digit",minute:"2-digit",hour12:false}).format(new Date()).split(":"),h=+p[0]+ +p[1]/60;
+    var open=d==="Sun"?false:d==="Sat"?(h>=8&&h<13):(h>=8&&h<17);
+    $("branches").innerHTML=B.map(function(b){return '<div class="row"><div><b>'+b.c+'</b><p>'+b.a+'</p></div><span class="pill '+(open?"open":"closed")+'">'+(open?W[lang].open:W[lang].closed)+'</span></div>';}).join("");
+  }
+
+  /* nav + lang */
+  function go(t){tab=t;["home","calc","branch","contact"].forEach(function(x){$("s-"+x).hidden=x!==t;});
+    document.querySelectorAll(".tabbar button").forEach(function(b){if(b.dataset.tab===t)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
+    $("phone").classList.toggle("light-top",t!=="home");$("demo-tag").hidden=t!=="home";$("scroll").scrollTop=0;}
+  function setLang(l){lang=l;try{localStorage.setItem("hc-lang",l);}catch(e){}document.documentElement.lang=l;
+    var D=l==="tr"?TR:EN;document.querySelectorAll("[data-i18n]").forEach(function(el){var k=el.dataset.i18n;if(D[k]!==undefined)el.textContent=D[k];});
+    $("l-en").setAttribute("aria-pressed",l==="en");$("l-tr").setAttribute("aria-pressed",l==="tr");
+    var hr=kktcHour();$("hello").textContent=W[l].hi[hr<12?0:hr<18?1:2];
+    renderRates();drawHero();calc();renderBranches();clock();}
+
+  document.querySelectorAll(".tabbar button").forEach(function(b){b.onclick=function(){go(b.dataset.tab);};});
+  document.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){if(b.dataset.mode)setMode(b.dataset.mode);go(b.dataset.go);};});
+  $("m-cash").onclick=function(){setMode("cash");};$("m-xfer").onclick=function(){setMode("xfer");};$("m-usdt").onclick=function(){setMode("usdt");};
+  $("l-en").onclick=function(){setLang("en");};$("l-tr").onclick=function(){setLang("tr");};
+  ["amt","from","to"].forEach(function(id){$(id).addEventListener("input",calc);});
+  $("swap").onclick=function(){if(mode==="xfer")return;var a=$("from").value;$("from").value=$("to").value;$("to").value=a;calc();};
+  $("copy").onclick=function(){var t=$("num").textContent;try{navigator.clipboard.writeText(t).then(function(){toast(W[lang].copied);},function(){toast(W[lang].copyfail);});}catch(e){toast(W[lang].copyfail);}};
+
+  fill();setLang(lang);
+  setInterval(tick,4000);setInterval(clock,1000);setInterval(renderBranches,60000);
+})();
+</script>
+</body>
+</html>
